@@ -13,6 +13,7 @@ import {
     SppgOption,
     extractErrorMessage,
 } from "@/lib/transaksiPembelian";
+import { getSortClass } from "@/lib/getSortClass";
 
 type FormType = {
     tanggal_pesan: string;
@@ -233,14 +234,14 @@ export default function Page() {
                     <thead className="bg-white shadow-lg">
                         <tr>
                             <th className="p-3">
-                                <button onClick={() => handleSort("id")} className="flex w-full items-center justify-center gap-2">
+                                <button onClick={() => handleSort("id")} className={`flex w-full items-center justify-center gap-2 transition-colors ${getSortClass(sortField, "id")}`}>
                                     No <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
                                 <button
                                     onClick={() => handleSort("tanggal_pesan")}
-                                    className="flex w-full items-center justify-center gap-2"
+                                    className={`flex w-full items-center justify-center gap-2 transition-colors ${getSortClass(sortField, "tanggal_pesan")}`}
                                 >
                                     Tgl Pesan <ArrowUpDown size={14} />
                                 </button>
@@ -248,7 +249,7 @@ export default function Page() {
                             <th className="p-3">
                                 <button
                                     onClick={() => handleSort("tanggal_dikirim")}
-                                    className="flex items-center gap-2"
+                                    className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "tanggal_dikirim")}`}
                                 >
                                     Tgl Kirim <ArrowUpDown size={14} />
                                 </button>
@@ -256,7 +257,7 @@ export default function Page() {
                             <th className="p-3">
                                 <button
                                     onClick={() => handleSort("nama_pembeli")}
-                                    className="flex items-center gap-2"
+                                    className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "nama_pembeli")}`}
                                 >
                                     Nama <ArrowUpDown size={14} />
                                 </button>
@@ -264,7 +265,7 @@ export default function Page() {
                             <th className="p-3">
                                 <button
                                     onClick={() => handleSort("keterangan")}
-                                    className="flex items-center gap-2"
+                                    className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "keterangan")}`}
                                 >
                                     Keterangan <ArrowUpDown size={14} />
                                 </button>
@@ -289,7 +290,7 @@ export default function Page() {
                             data.map((item, index) => (
                                 <tr
                                     key={item.id}
-                                    className="border-t border-primary/20 hover:bg-white/50"
+                                    className="border-t border-primary/20 hover:bg-lime-100/80"
                                 >
                                     <td className="p-3 text-center">{item.id}</td>
                                     <td className="p-3 text-center">{item.tanggal_pesan}</td>

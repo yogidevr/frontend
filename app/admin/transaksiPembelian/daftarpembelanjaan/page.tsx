@@ -13,6 +13,7 @@ import {
     Meta,
     extractErrorMessage,
 } from "@/lib/transaksiPembelian";
+import { getSortClass } from "@/lib/getSortClass";
 
 const initialMeta: Meta = {
     current_page: 1,
@@ -149,12 +150,12 @@ export default function Page() {
                     <thead className="bg-white shadow-lg">
                         <tr>
                             <th className="p-3">
-                                <button onClick={() => handleSort("id")} className="flex w-full items-center justify-center gap-2">
+                                <button onClick={() => handleSort("id")} className={`flex w-full items-center justify-center gap-2 transition-colors ${getSortClass(sortField, "id")}`}>
                                     No <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("tanggal_pesan")} className="flex w-full items-center justify-center gap-2">
+                                <button onClick={() => handleSort("tanggal_pesan")} className={`flex w-full items-center justify-center gap-2 transition-colors ${getSortClass(sortField, "tanggal_pesan")}`}>
                                     Tgl Pesan <ArrowUpDown size={14} />
                                 </button>
                             </th>
@@ -178,7 +179,7 @@ export default function Page() {
                             data.map((item, index) => (
                                 <tr
                                     key={item.id}
-                                    className="border-t border-primary/20 hover:bg-white/50"
+                                    className="border-t border-primary/20 hover:bg-lime-100/80"
                                 >
                                     <td className="p-3 text-center">
                                         {sortField === "id"

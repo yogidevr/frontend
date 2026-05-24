@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { Pencil, Trash2, Plus, ArrowUpDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getSortClass } from "@/lib/getSortClass";
 
 /* ================= TYPE ================= */
 type Product = {
@@ -189,31 +190,31 @@ export default function Page() {
               <th className="p-3">No</th>
 
               <th className="p-3">
-                <button onClick={() => handleSort("nomor_invoice")} className="flex items-center gap-2">
+                <button onClick={() => handleSort("nomor_invoice")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "nomor_invoice")}`}>
                   Nomor Invoice <ArrowUpDown size={14} />
                 </button>
               </th>
 
               <th className="p-3">
-                <button onClick={() => handleSort("penjualan_id")} className="flex items-center gap-2">
+                <button onClick={() => handleSort("penjualan_id")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "penjualan_id")}`}>
                   ID Penjualan <ArrowUpDown size={14} />
                 </button>
               </th>
 
               <th className="p-3">
-                <button onClick={() => handleSort("tanggal_invoice")} className="flex items-center gap-2">
+                <button onClick={() => handleSort("tanggal_invoice")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "tanggal_invoice")}`}>
                   Tanggal Invoice <ArrowUpDown size={14} />
                 </button>
               </th>
 
               <th className="p-3">
-                <button onClick={() => handleSort("total_tagihan")} className="flex items-center gap-2">
+                <button onClick={() => handleSort("total_tagihan")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "total_tagihan")}`}>
                   Total Tagihan <ArrowUpDown size={14} />
                 </button>
               </th>
 
               <th className="p-3">
-                <button onClick={() => handleSort("status_pembayaran")} className="flex items-center gap-2">
+                <button onClick={() => handleSort("status_pembayaran")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "status_pembayaran")}`}>
                   Status <ArrowUpDown size={14} />
                 </button>
               </th>
@@ -224,7 +225,7 @@ export default function Page() {
 
           <tbody>
             {paginatedData.map((item, index) => (
-              <tr key={item.id} className="border-t border-primary/20 hover:bg-white/50">
+              <tr key={item.id} className="border-t border-primary/20 hover:bg-lime-100/80">
                 <td className="p-3 text-center">
                   {(currentPage - 1) * perPage + index + 1}
                 </td>

@@ -15,6 +15,7 @@ import {
     SupplierOption,
     extractErrorMessage,
 } from "@/lib/transaksiPembelian";
+import { getSortClass } from "@/lib/getSortClass";
 
 type EditForm = {
     supplier_id: number | "";
@@ -289,37 +290,37 @@ export default function Page() {
                     <thead className="bg-white shadow-lg">
                         <tr>
                             <th className="p-3">
-                                <button onClick={() => handleSort("id")} className="flex w-full items-center justify-center gap-2">
+                                <button onClick={() => handleSort("id")} className={`flex w-full items-center justify-center gap-2 transition-colors ${getSortClass(sortField, "id")}`}>
                                     No <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("nama_barang")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("nama_barang")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "nama_barang")}`}>
                                     Barang <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("qty")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("qty")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "qty")}`}>
                                     Qty <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("satuan")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("satuan")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "satuan")}`}>
                                     Satuan <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("stok")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("stok")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "stok")}`}>
                                     Stok <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("kebutuhan")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("kebutuhan")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "kebutuhan")}`}>
                                     Kebutuhan <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("nama_supplier")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("nama_supplier")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "nama_supplier")}`}>
                                     Supplier <ArrowUpDown size={14} />
                                 </button>
                             </th>
@@ -343,7 +344,7 @@ export default function Page() {
                             displayItems.map((item, index) => (
                                 <tr
                                     key={item.id}
-                                    className="border-t border-primary/20 hover:bg-white/50"
+                                    className="border-t border-primary/20 hover:bg-lime-100/80"
                                 >
                                     <td className="p-3 text-center">
                                         {sortField === "id" ? item.id : ((meta.current_page || 1) - 1) * perPage + index + 1}

@@ -10,6 +10,7 @@ import {
     type Meta,
 } from "@/lib/transaksiPembelian";
 import axios from "axios";
+import { getSortClass } from "@/lib/getSortClass";
 
 type GudangOption = {
     id: number;
@@ -459,44 +460,44 @@ export default function Page() {
                     <thead className="bg-white shadow-lg">
                         <tr>
                             <th className="p-3">
-                                <button onClick={() => handleSort("id" as any)} className="flex w-full items-center justify-center gap-2">
+                                <button onClick={() => handleSort("id" as any)} className={`flex w-full items-center justify-center gap-2 transition-colors ${getSortClass(sortField, "id")}`}>
                                     No <ArrowUpDown size={14} />
                                 </button>
                             </th>
 
                             <th className="p-3">
-                                <button onClick={() => handleSort("nama_barang")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("nama_barang")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "nama_barang")}`}>
                                     Nama Barang <ArrowUpDown size={14} />
                                 </button>
                             </th>
 
                             <th className="p-3">
-                                <button onClick={() => handleSort("gudang_id")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("gudang_id")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "gudang_id")}`}>
                                     Gudang <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("jenis_stok")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("jenis_stok")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "jenis_stok")}`}>
                                     Jenis Stok <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("qty_retur")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("qty_retur")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "qty_retur")}`}>
                                     Qty Retur <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("satuan_terkecil")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("satuan_terkecil")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "satuan_terkecil")}`}>
                                     Satuan <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("harga_beli")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("harga_beli")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "harga_beli")}`}>
                                     Harga Beli <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("alasan")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("alasan")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "alasan")}`}>
                                     Alasan <ArrowUpDown size={14} />
                                 </button>
                             </th>
@@ -506,7 +507,7 @@ export default function Page() {
 
                     <tbody>
                         {data.map((item, index) => (
-                            <tr key={item.id} className="border-t border-primary/20 hover:bg-white/50">
+                            <tr key={item.id} className="border-t border-primary/20 hover:bg-lime-100/80">
                                 <td className="p-3 text-center">
                                     {sortField === "id" ? item.id : ((meta.current_page || 1) - 1) * (meta.per_page || perPage) + index + 1}
                                 </td>

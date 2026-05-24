@@ -8,6 +8,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import api from "@/lib/api";
 import { getInvoiceTheme } from "@/lib/invoiceThemes";
+import { getSortClass } from "@/lib/getSortClass";
 
 type PaymentStatus = "lunas" | "belum lunas";
 
@@ -738,52 +739,52 @@ export default function Page() {
           <thead className="bg-white shadow-lg">
             <tr>
               <th className="p-3">
-                                <button onClick={() => handleSort("id")} className="flex w-full items-center justify-center gap-2">
+                                <button onClick={() => handleSort("id")} className={`flex w-full items-center justify-center gap-2 transition-colors ${getSortClass(sortField, "id")}`}>
                                     No <ArrowUpDown size={14} />
                                 </button>
                             </th>
               <th className="p-3">
-                <button onClick={() => handleSort("nomor_invoice")} className="flex items-center gap-2">
+                <button onClick={() => handleSort("nomor_invoice")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "nomor_invoice")}`}>
                   Nomor Invoice <ArrowUpDown size={14} />
                 </button>
               </th>
               <th className="p-3">
-                <button onClick={() => handleSort("no_po")} className="flex items-center gap-2">
+                <button onClick={() => handleSort("no_po")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "no_po")}`}>
                   No. PO <ArrowUpDown size={14} />
                 </button>
               </th>
               <th className="p-3">
-                <button onClick={() => handleSort("sppg")} className="flex items-center gap-2">
+                <button onClick={() => handleSort("sppg")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "sppg")}`}>
                   SPPG <ArrowUpDown size={14} />
                 </button>
               </th>
               <th className="p-3">
-                <button onClick={() => handleSort("alamat")} className="flex items-center gap-2">
+                <button onClick={() => handleSort("alamat")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "alamat")}`}>
                   Alamat <ArrowUpDown size={14} />
                 </button>
               </th>
               <th className="p-3">
-                <button onClick={() => handleSort("no_hp")} className="flex items-center gap-2">
+                <button onClick={() => handleSort("no_hp")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "no_hp")}`}>
                   No HP <ArrowUpDown size={14} />
                 </button>
               </th>
               <th className="p-3">
-                <button onClick={() => handleSort("tanggal_kirim")} className="flex items-center gap-2">
+                <button onClick={() => handleSort("tanggal_kirim")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "tanggal_kirim")}`}>
                   Tanggal Kirim <ArrowUpDown size={14} />
                 </button>
               </th>
               <th className="p-3">
-                <button onClick={() => handleSort("tanggal_invoice")} className="flex items-center gap-2">
+                <button onClick={() => handleSort("tanggal_invoice")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "tanggal_invoice")}`}>
                   Tanggal Invoice <ArrowUpDown size={14} />
                 </button>
               </th>
               <th className="p-3">
-                <button onClick={() => handleSort("total_tagihan")} className="flex items-center gap-2">
+                <button onClick={() => handleSort("total_tagihan")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "total_tagihan")}`}>
                   Total Tagihan <ArrowUpDown size={14} />
                 </button>
               </th>
               <th className="p-3">
-                <button onClick={() => handleSort("status_pembayaran")} className="flex items-center gap-2">
+                <button onClick={() => handleSort("status_pembayaran")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "status_pembayaran")}`}>
                   Status <ArrowUpDown size={14} />
                 </button>
               </th>
@@ -800,7 +801,7 @@ export default function Page() {
               </tr>
             ) : sortedData.length > 0 ? (
               sortedData.map((item) => (
-                <tr key={item.id} className="border-t border-primary/20 hover:bg-white/50">
+                <tr key={item.id} className="border-t border-primary/20 hover:bg-lime-100/80">
                   <td className="p-3 text-center">{item.id}</td>
                   <td className="p-3">{item.nomor_invoice}</td>
                   <td className="p-3">{item.no_po ?? "-"}</td>

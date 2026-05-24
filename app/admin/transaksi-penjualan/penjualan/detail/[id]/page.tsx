@@ -7,6 +7,7 @@ import { useRouter, useParams } from "next/navigation";
 import api from "@/lib/api";
 import { extractErrorMessage, formatCurrency, type ApiListResponse, type Meta } from "@/lib/transaksiPembelian";
 import axios from "axios";
+import { getSortClass } from "@/lib/getSortClass";
 
 type GudangOption = {
     id: number;
@@ -387,18 +388,18 @@ export default function Page() {
                     <thead className="bg-white shadow-lg">
                         <tr>
                             <th className="p-3">
-                                <button onClick={() => handleSort("id" as any)} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("id" as any)} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "id")}`}>
                                     No <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("nama_barang")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("nama_barang")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "nama_barang")}`}>
                                     Barang <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3 text-left">Gudang</th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("qty")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("qty")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "qty")}`}>
                                     Qty <ArrowUpDown size={14} />
                                 </button>
                             </th>
@@ -406,7 +407,7 @@ export default function Page() {
                             <th className="p-3 text-left">Stok</th>
                             <th className="p-3 text-left">Status</th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("harga_satuan")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("harga_satuan")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "harga_satuan")}`}>
                                     Harga <ArrowUpDown size={14} />
                                 </button>
                             </th>
@@ -424,7 +425,7 @@ export default function Page() {
                             </tr>
                         ) : items.length > 0 ? (
                             items.map((item, index) => (
-                                <tr key={`${item.penjualan_id ?? "source"}-${item.id}`} className="border-t border-primary/20 hover:bg-white/50">
+                                <tr key={`${item.penjualan_id ?? "source"}-${item.id}`} className="border-t border-primary/20 hover:bg-lime-100/80">
                                     <td className="p-3 text-center">{sortField === "id" ? item.id : ((meta.current_page || 1) - 1) * perPage + index + 1}</td>
                                     <td className="p-3">{item.nama_barang}</td>
                                     <td className="p-3">{item.gudang?.nama_gudang ?? "-"}</td>

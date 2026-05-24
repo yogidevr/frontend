@@ -11,6 +11,7 @@ import {
 } from "@/lib/transaksiPembelian";
 import { DEFAULT_INVOICE_THEME_CODE, INVOICE_THEMES } from "@/lib/invoiceThemes";
 import axios from "axios";
+import { getSortClass } from "@/lib/getSortClass";
 
 /* ================= TYPE ================= */
 type Product = {
@@ -285,30 +286,45 @@ export default function Page() {
                     <thead className="bg-white shadow-lg">
                         <tr>
                             <th className="p-3">
-                                <button onClick={() => handleSort("id")} className="flex w-full items-center justify-center gap-2">
+                                <button onClick={() => handleSort("id")} className={`flex w-full items-center justify-center gap-2 transition-colors ${getSortClass(
+                                    sortField,
+                                    "id"
+                                )}`}>
                                     No <ArrowUpDown size={14} />
                                 </button>
                             </th>
 
                             <th className="p-3">
-                                <button onClick={() => handleSort("nama_perusahaan")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("nama_perusahaan")} className={`flex items-center gap-2 transition-colors ${getSortClass(
+                                    sortField,
+                                    "nama_perusahaan"
+                                )}`}>
                                     Nama Perusahaan <ArrowUpDown size={14} />
                                 </button>
                             </th>
 
                             <th className="p-3">
-                                <button onClick={() => handleSort("alamat")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("alamat")} className={`flex items-center gap-2 transition-colors ${getSortClass(
+                                    sortField,
+                                    "alamat"
+                                )}`}>
                                     Alamat <ArrowUpDown size={14} />
                                 </button>
                             </th>
 
                             <th className="p-3">
-                                <button onClick={() => handleSort("nama_pic")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("nama_pic")} className={`flex items-center gap-2 transition-colors ${getSortClass(
+                                    sortField,
+                                    "nama_pic"
+                                )}`}>
                                     Nama PIC <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("tema_invoice")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("tema_invoice")} className={`flex items-center gap-2 transition-colors ${getSortClass(
+                                    sortField,
+                                    "tema_invoice"
+                                )}`}>
                                     Tema <ArrowUpDown size={14} />
                                 </button>
                             </th>
@@ -320,7 +336,7 @@ export default function Page() {
 
                     <tbody>
                         {data.map((item, index) => (
-                            <tr key={item.id} className="border-t border-primary/20 hover:bg-white/50">
+                            <tr key={item.id} className="border-t border-primary/20 hover:bg-lime-100/80">
                                 <td className="p-3 text-center">
                                     {sortField === "id" ? item.id : ((meta.current_page || 1) - 1) * (meta.per_page || perPage) + index + 1}
                                 </td>

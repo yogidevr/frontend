@@ -10,6 +10,7 @@ import api from "@/lib/api";
 import { getInvoiceTheme } from "@/lib/invoiceThemes";
 import { extractErrorMessage, type ApiListResponse, type Meta } from "@/lib/transaksiPembelian";
 import axios from "axios";
+import { getSortClass } from "@/lib/getSortClass";
 
 type TandaTerimaItem = {
     id: number;
@@ -419,27 +420,27 @@ export default function Page() {
                     <thead className="bg-white shadow-lg">
                         <tr>
                             <th className="p-3">
-                                <button onClick={() => handleSort("id")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("id")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "id")}`}>
                                     No <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("nama_barang")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("nama_barang")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "nama_barang")}`}>
                                     Nama Barang
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("qty")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("qty")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "qty")}`}>
                                     Qty
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("satuan")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("satuan")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "satuan")}`}>
                                     Satuan
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("keterangan")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("keterangan")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "keterangan")}`}>
                                     Keterangan
                                 </button>
                             </th>
@@ -461,7 +462,7 @@ export default function Page() {
                             </tr>
                         ) : (
                             items.map((item, index) => (
-                                <tr key={item.id} className="border-t border-primary/20 hover:bg-white/50">
+                                <tr key={item.id} className="border-t border-primary/20 hover:bg-lime-100/80">
                                     <td className="p-3 text-center">
                                         {sortField === "id" ? item.id : ((meta.current_page || 1) - 1) * perPage + index + 1}
                                     </td>

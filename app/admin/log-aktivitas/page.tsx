@@ -8,6 +8,7 @@ import {
     type ApiListResponse,
     type Meta,
 } from "@/lib/transaksiPembelian";
+import { getSortClass } from "@/lib/getSortClass";
 
 type ActivityLog = {
     id: number;
@@ -145,27 +146,27 @@ export default function Page() {
                     <thead className="bg-white shadow-lg">
                         <tr>
                             <th className="p-3">
-                                <button onClick={() => handleSort("id")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("id")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "id")}`}>
                                     No <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("created_at")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("created_at")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "created_at")}`}>
                                     Waktu <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("user_name")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("user_name")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "user_name")}`}>
                                     User <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("module")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("module")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "module")}`}>
                                     Modul <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("action")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("action")} className={`flex items-center gap-2 transition-colors ${getSortClass(sortField, "action")}`}>
                                     Aktivitas <ArrowUpDown size={14} />
                                 </button>
                             </th>
@@ -183,7 +184,7 @@ export default function Page() {
                         ) : null}
 
                         {data.map((item) => (
-                            <tr key={item.id} className="border-t border-primary/20 hover:bg-white/50">
+                            <tr key={item.id} className="border-t border-primary/20 hover:bg-lime-100/80">
                                 <td className="p-3 text-center align-top">{item.id}</td>
                                 <td className="p-3 whitespace-nowrap align-top">{formatDateTime(item.created_at)}</td>
                                 <td className="p-3 align-top">{item.user_name || "-"}</td>

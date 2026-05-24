@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import useSWR from "swr";
+import fetcher from "@/lib/fetcher";
 
 import api from "@/lib/api";
 
@@ -137,13 +139,46 @@ export default function Dashboard() {
   const [dayPhase, setDayPhase] = useState<DayPhase>("pagi");
   const [filters, setFilters] = useState<DashboardFilters>({ tanggal_awal: "", tanggal_akhir: "" });
   const [appliedFilters, setAppliedFilters] = useState<DashboardFilters>({ tanggal_awal: "", tanggal_akhir: "" });
-  const [summary, setSummary] = useState<DashboardSummary | null>(null);
-  const [cashflowPoints, setCashflowPoints] = useState<CashflowPoint[]>([]);
-  const [salesBreakdown, setSalesBreakdown] = useState<SalesBreakdown[]>([]);
-  const [expenseItems, setExpenseItems] = useState<ExpenseItem[]>([]);
-  const [inventory, setInventory] = useState<InventorySummary | null>(null);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
+
+  const query = useMemo(() => {
+    if (!appliedFilters.tanggal_awal || !appliedFilters.tanggal_akhir) {
+      return null;
+    }
+
+    return `tanggal_awal=${appliedFilters.tanggal_awal}&tanggal_akhir=${appliedFilters.tanggal_akhir}`;
+  }, [appliedFilters]);
+
+  const { data: summaryData, isLoading: summaryLoading } = useSWR(
+    query ? `/dashboard/summary?${query}` : null,
+    fetcher
+  );
+
+  const { data: trendData } = useSWR(
+    query ? `/dashboard/cashflow-trend?${query}` : null,
+    fetcher
+  );
+
+  const { data: salesData } = useSWR(
+    query ? `/dashboard/penjualan-per-sppg?${query}` : null,
+    fetcher
+  );
+
+  const { data: expenseData } = useSWR(
+    query ? `/dashboard/beban-operasional?${query}` : null,
+    fetcher
+  );
+
+  const { data: inventoryData } = useSWR(
+    "/dashboard/persediaan",
+    fetcher
+  );
+
+  const summary = summaryData?.data;
+  const cashflowPoints = trendData?.data?.points ?? [];
+  const salesBreakdown = salesData?.data?.breakdown ?? [];
+  const expenseItems = expenseData?.data?.items ?? [];
+  const inventory = inventoryData?.data;
 
   useEffect(() => {
     setIsHydrated(true);
@@ -187,36 +222,7 @@ export default function Dashboard() {
     setDayPhase("malam");
   }, []);
 
-  useEffect(() => {
-    if (!appliedFilters.tanggal_awal || !appliedFilters.tanggal_akhir) return;
 
-    const loadDashboard = async () => {
-      setLoading(true);
-      setError("");
-
-      try {
-        const [summaryRes, trendRes, salesRes, expenseRes, inventoryRes] = await Promise.all([
-          api.get("/dashboard/summary", { params: appliedFilters }),
-          api.get("/dashboard/cashflow-trend", { params: appliedFilters }),
-          api.get("/dashboard/penjualan-per-sppg", { params: appliedFilters }),
-          api.get("/dashboard/beban-operasional", { params: appliedFilters }),
-          api.get("/dashboard/persediaan"),
-        ]);
-
-        setSummary(summaryRes.data.data);
-        setCashflowPoints(trendRes.data.data?.points ?? []);
-        setSalesBreakdown(salesRes.data.data?.breakdown ?? []);
-        setExpenseItems(expenseRes.data.data?.items ?? []);
-        setInventory(inventoryRes.data.data);
-      } catch {
-        setError("Dashboard belum berhasil dimuat penuh.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    void loadDashboard();
-  }, [appliedFilters]);
 
   const selectedDateLabel = useMemo(() => {
     if (!appliedFilters.tanggal_awal || !appliedFilters.tanggal_akhir) return "-";
@@ -226,10 +232,20 @@ export default function Dashboard() {
     )}`;
   }, [appliedFilters.tanggal_akhir, appliedFilters.tanggal_awal]);
 
-  const totalPendapatanCashflow = cashflowPoints.reduce((sum, item) => sum + item.pendapatan, 0);
-  const totalPemasukanLainCashflow = cashflowPoints.reduce((sum, item) => sum + item.pemasukan_lain, 0);
-  const totalPengeluaranCashflow = cashflowPoints.reduce((sum, item) => sum + item.pengeluaran, 0);
+  const totalPendapatanCashflow = cashflowPoints.reduce(
+    (sum: number, item: CashflowPoint) => sum + item.pendapatan,
+    0
+  );
 
+  const totalPemasukanLainCashflow = cashflowPoints.reduce(
+    (sum: number, item: CashflowPoint) => sum + item.pemasukan_lain,
+    0
+  );
+
+  const totalPengeluaranCashflow = cashflowPoints.reduce(
+    (sum: number, item: CashflowPoint) => sum + item.pengeluaran,
+    0
+  );
   const greetingIcon = useMemo(() => {
     switch (dayPhase) {
       case "pagi":
@@ -255,6 +271,46 @@ export default function Dashboard() {
         );
     }
   }, [dayPhase]);
+
+  // Loading Screen
+  if (summaryLoading) {
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-sky-100 via-white to-blue-100">
+        {/* Blob kiri */}
+        <div className="absolute left-10 top-20 h-44 w-44 rounded-full bg-blue-300/20 blur-3xl animate-pulse" />
+
+        {/* Blob kanan */}
+        <div className="absolute bottom-20 right-10 h-56 w-56 rounded-full bg-cyan-300/20 blur-3xl animate-pulse" />
+
+        {/* Bounce dots */}
+        <div className="flex items-end gap-3">
+          <div className="h-6 w-6 animate-bounce rounded-full bg-blue-500 [animation-delay:-0.3s]" />
+          <div className="h-6 w-6 animate-bounce rounded-full bg-cyan-500 [animation-delay:-0.15s]" />
+          <div className="h-6 w-6 animate-bounce rounded-full bg-sky-500" />
+        </div>
+
+        {/* Face */}
+        <div className="mt-8 flex flex-col items-center">
+          <div className="flex gap-5">
+            <div className="h-3 w-3 rounded-full bg-gray-700" />
+            <div className="h-3 w-3 rounded-full bg-gray-700" />
+          </div>
+
+          <div className="mt-3 h-2 w-6 animate-pulse rounded-full bg-gray-700" />
+        </div>
+
+        {/* Text */}
+        <p className="mt-8 animate-pulse text-sm font-medium tracking-wide text-gray-700">
+          Memuat dashboard...
+        </p>
+
+        {/* Progress */}
+        <div className="mt-5 h-2 w-60 overflow-hidden rounded-full bg-blue-100">
+          <div className="h-full w-1/2 animate-[loading_1.5s_linear_infinite] rounded-full bg-gradient-to-r from-cyan-400 to-blue-600" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen">
@@ -449,7 +505,13 @@ export default function Dashboard() {
               <div className="mb-4">
                 <p className="text-sm text-white/90">Total penjualan global</p>
                 <h2 className="mt-1 text-3xl font-bold">
-                  {toRupiah(salesBreakdown.reduce((sum, item) => sum + item.total_penjualan, 0))}
+                  {toRupiah(
+                    salesBreakdown.reduce(
+                      (sum: number, item: SalesBreakdown) =>
+                        sum + item.total_penjualan,
+                      0
+                    )
+                  )}
                 </h2>
               </div>
 
@@ -465,7 +527,7 @@ export default function Dashboard() {
                         outerRadius={95}
                         paddingAngle={4}
                       >
-                        {salesBreakdown.map((item, index) => (
+                        {salesBreakdown.map((item: SalesBreakdown, index: number) => (
                           <Cell key={item.sppg_id} fill={PIE_COLORS[index % PIE_COLORS.length]} />
                         ))}
                       </Pie>
@@ -476,7 +538,7 @@ export default function Dashboard() {
 
                 <div className="space-y-3">
                   {salesBreakdown.length ? (
-                    salesBreakdown.map((item, index) => (
+                    salesBreakdown.map((item: SalesBreakdown, index: number) => (
                       <div key={item.sppg_id} className="rounded-xl bg-white/95 p-3 text-slate-900">
                         <div className="flex items-center justify-between gap-3">
                           <div className="flex items-center gap-3">
@@ -572,12 +634,6 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         </div>
-
-        {loading ? (
-          <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500">
-            Memuat data dashboard...
-          </div>
-        ) : null}
       </main>
     </div>
   );

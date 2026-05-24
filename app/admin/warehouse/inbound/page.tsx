@@ -10,6 +10,7 @@ import {
     type Meta,
 } from "@/lib/transaksiPembelian";
 import axios from "axios";
+import { getSortClass } from "@/lib/getSortClass";
 
 type GudangOption = {
     id: number;
@@ -377,61 +378,61 @@ export default function Page() {
                     <thead className="bg-white shadow-lg">
                         <tr>
                             <th className="p-3">
-                                <button onClick={() => handleSort("id")} className="flex items-center gap-2 text-left">
+                                <button onClick={() => handleSort("id")} className={`flex items-center gap-2 text-left transition-colors ${getSortClass(sortField, "id")}`}>
                                     No
                                     <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("nama_barang")} className="flex items-center gap-2 text-left">
+                                <button onClick={() => handleSort("nama_barang")} className={`flex items-center gap-2 text-left transition-colors ${getSortClass(sortField, "nama_barang")}`}>
                                     Nama Barang
                                     <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("gudang_id")} className="flex items-center gap-2 text-left">
+                                <button onClick={() => handleSort("gudang_id")} className={`flex items-center gap-2 text-left transition-colors ${getSortClass(sortField, "gudang_id")}`}>
                                     Gudang
                                     <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("kategori")} className="flex items-center gap-2 text-left">
+                                <button onClick={() => handleSort("kategori")} className={`flex items-center gap-2 text-left transition-colors ${getSortClass(sortField, "kategori")}`}>
                                     Kategori
                                     <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("tanggal_masuk")} className="flex items-center gap-2 text-left">
+                                <button onClick={() => handleSort("tanggal_masuk")} className={`flex items-center gap-2 text-left transition-colors ${getSortClass(sortField, "tanggal_masuk")}`}>
                                     Tanggal
                                     <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("qty")} className="flex items-center gap-2 text-left">
+                                <button onClick={() => handleSort("qty")} className={`flex items-center gap-2 text-left transition-colors ${getSortClass(sortField, "qty")}`}>
                                     Qty
                                     <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("satuan")} className="flex items-center gap-2 text-left">
+                                <button onClick={() => handleSort("satuan")} className={`flex items-center gap-2 text-left transition-colors ${getSortClass(sortField, "satuan")}`}>
                                     Satuan
                                     <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("harga_satuan")} className="flex items-center gap-2 text-left">
+                                <button onClick={() => handleSort("harga_satuan")} className={`flex items-center gap-2 text-left transition-colors ${getSortClass(sortField, "harga_satuan")}`}>
                                     Harga
                                     <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("total_harga")} className="flex items-center gap-2 text-left">
+                                <button onClick={() => handleSort("total_harga")} className={`flex items-center gap-2 text-left transition-colors ${getSortClass(sortField, "total_harga")}`}>
                                     Total
                                     <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("nama_supplier")} className="flex items-center gap-2 text-left">
+                                <button onClick={() => handleSort("nama_supplier")} className={`flex items-center gap-2 text-left transition-colors ${getSortClass(sortField, "nama_supplier")}`}>
                                     Supplier
                                     <ArrowUpDown size={14} />
                                 </button>
@@ -442,7 +443,7 @@ export default function Page() {
 
                     <tbody>
                         {data.map((item, index) => (
-                            <tr key={item.id} className="border-t border-primary/20 hover:bg-white/50">
+                            <tr key={item.id} className="border-t border-primary/20 hover:bg-lime-100/80">
                                 <td className="p-3 text-center">
                                     {item.id}
                                 </td>

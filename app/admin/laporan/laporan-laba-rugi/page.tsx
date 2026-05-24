@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowUpDown, CalendarRange, HandCoins, ReceiptText, ShoppingCart, Wallet } from "lucide-react";
 import api from "@/lib/api";
 import { extractErrorMessage, formatCurrency } from "@/lib/transaksiPembelian";
+import { getSortClass } from "@/lib/getSortClass";
 
 type SppgOption = {
     id: number;

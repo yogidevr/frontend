@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import api from "@/lib/api";
 import { extractErrorMessage, type ApiListResponse, type Meta } from "@/lib/transaksiPembelian";
+import { getSortClass } from "@/lib/getSortClass";
 
 type Pengeluaran = {
     id: number;
@@ -265,6 +266,8 @@ export default function Page() {
         return rows;
     }, [data, sortField, sortOrder]);
 
+
+
     return (
         <div className="p-6 space-y-6">
             <div className="flex justify-between items-center">
@@ -310,37 +313,58 @@ export default function Page() {
                     <thead className="bg-gray-100">
                         <tr>
                             <th className="p-3">
-                                <button onClick={() => handleSort("id")} className="flex w-full items-center justify-center gap-2">
+                                <button onClick={() => handleSort("id" as any)} className={`flex w-full items-center justify-center gap-2 transition-colors ${getSortClass(
+                                    sortField,
+                                    "id"
+                                )}`}>
                                     No <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("nama_operasional")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("nama_operasional")} className={`flex items-center gap-2 transition-colors ${getSortClass(
+                                    sortField,
+                                    "nama_operasional"
+                                )}`}>
                                     Jenis Operasional <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("tanggal_keluar")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("tanggal_keluar")} className={`flex items-center gap-2 transition-colors ${getSortClass(
+                                    sortField,
+                                    "tanggal_keluar"
+                                )}`}>
                                     Tanggal <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("qty")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("qty")} className={`flex items-center gap-2 transition-colors ${getSortClass(
+                                    sortField,
+                                    "qty"
+                                )}`}>
                                     Qty <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("satuan")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("satuan")} className={`flex items-center gap-2 transition-colors ${getSortClass(
+                                    sortField,
+                                    "satuan"
+                                )}`}>
                                     Satuan <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("harga_satuan")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("harga_satuan")} className={`flex items-center gap-2 transition-colors ${getSortClass(
+                                    sortField,
+                                    "harga_satuan"
+                                )}`}>
                                     Harga <ArrowUpDown size={14} />
                                 </button>
                             </th>
                             <th className="p-3">
-                                <button onClick={() => handleSort("total")} className="flex items-center gap-2">
+                                <button onClick={() => handleSort("total")} className={`flex items-center gap-2 transition-colors ${getSortClass(
+                                    sortField,
+                                    "total"
+                                )}`}>
                                     Total <ArrowUpDown size={14} />
                                 </button>
                             </th>
@@ -567,7 +591,7 @@ export default function Page() {
 
 function Modal({
     children,
-    
+
 }: {
     children: React.ReactNode;
     onClose: () => void;
@@ -575,7 +599,7 @@ function Modal({
     return (
         <motion.div
             className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
-           
+
         >
             <div onClick={(e) => e.stopPropagation()}>{children}</div>
         </motion.div>
