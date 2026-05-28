@@ -36,6 +36,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter, usePathname } from "next/navigation";
 
 
+const user = {
+  role: "superadmin",
+};
+
+const isSuperAdmin = user?.role === "superadmin";
+
 /* ================= MENU CONFIG (TIDAK DIUBAH) ================= */
 const menus = [
   {
@@ -54,7 +60,16 @@ const menus = [
       { icon: <Banknote size={16} />, label: "Bank & Rekening", path: "/admin/master/bank" },
       { icon: <Building size={16} />, label: "Perusahaan", path: "/admin/master/perusahaan" },
       { icon: <ShieldCheck size={16} />, label: "Kategori & Satuan", path: "/admin/master/kategori" },
-      { icon: <ShieldCheck size={16} />, label: "Role", path: "/admin/master/role" },
+      // Role hanya muncul untuk superadmin
+      ...(isSuperAdmin
+        ? [
+          {
+            icon: <ShieldCheck size={16} />,
+            label: "Role",
+            path: "/admin/master/role",
+          },
+        ]
+        : []),
     ],
   },
   {
@@ -89,7 +104,7 @@ const menus = [
       { icon: <ScrollText size={16} />, label: "Invoice Penjualan", path: "/admin/transaksi-penjualan/invoice-penjualan" },
     ],
   },
-   {
+  {
     label: "Keuangan & Akuntansi",
     icon: <Wallet />,
     key: "keuangan",
@@ -120,6 +135,8 @@ export default function Sidebar({ open }: { open: boolean }) {
       [key]: !prev[key],
     }));
   };
+
+  console.log(user);
 
   return (
     <aside
