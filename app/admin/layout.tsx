@@ -4,6 +4,7 @@ import { ReactNode, useState } from "react";
 import Sidebar from "@/components/mycomponents/Sidebar";
 import Header from "@/components/mycomponents/Header";
 import GlassBackground from "@/components/ui/GlassBackground";
+import PermissionBoundary from "@/components/mycomponents/PermissionBoundary";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(true);
@@ -27,7 +28,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
         {/* CONTENT */}
         <main className="h-[calc(100vh-64px)] overflow-y-auto p-2 bg-transparent">
-          {children}
+          <PermissionBoundary>{children}</PermissionBoundary>
         </main>
       </div>
     </div>

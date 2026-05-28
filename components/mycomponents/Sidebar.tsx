@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   LayoutDashboard,
   ChevronDown,
@@ -34,27 +34,41 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter, usePathname } from "next/navigation";
+import { getStoredPermissionCodes, getStoredUser, isSuperAdminRole } from "@/lib/permissions";
 
+type MenuChild = {
+  icon: React.ReactNode;
+  label: string;
+  path: string;
+  permission?: string;
+};
+
+type MenuConfig = {
+  label: string;
+  icon: React.ReactNode;
+  key: string;
+  children: MenuChild[];
+};
 
 /* ================= MENU CONFIG (TIDAK DIUBAH) ================= */
-const menus = [
+const menus: MenuConfig[] = [
   {
     label: "Master",
     icon: <Landmark />,
     key: "master",
     children: [
-      { icon: <MapPin size={16} />, label: "Wilayah & Lokasi", path: "/admin/master/wilayah" },
-      { icon: <Truck size={16} />, label: "Supplier", path: "/admin/master/supplier" },
-      { icon: <Users size={16} />, label: "Mitra", path: "/admin/master/mitra" },
-      { icon: <Building2 size={16} />, label: "SPPG", path: "/admin/master/sppg" },
-      { icon: <Boxes size={16} />, label: "Produk & Barang", path: "/admin/master/produk" },
-      { icon: <Warehouse size={16} />, label: "Gudang", path: "/admin/master/gudang" },
-      { icon: <Car size={16} />, label: "Armada", path: "/admin/master/armada" },
-      { icon: <Users size={16} />, label: "Karyawan", path: "/admin/master/karyawan" },
-      { icon: <Banknote size={16} />, label: "Bank & Rekening", path: "/admin/master/bank" },
-      { icon: <Building size={16} />, label: "Perusahaan", path: "/admin/master/perusahaan" },
-      { icon: <ShieldCheck size={16} />, label: "Kategori & Satuan", path: "/admin/master/kategori" },
-      { icon: <ShieldCheck size={16} />, label: "Role", path: "/admin/master/role" },
+      { icon: <MapPin size={16} />, label: "Wilayah & Lokasi", path: "/admin/master/wilayah", permission: "master.wilayah.view" },
+      { icon: <Truck size={16} />, label: "Supplier", path: "/admin/master/supplier", permission: "master.supplier.view" },
+      { icon: <Users size={16} />, label: "Mitra", path: "/admin/master/mitra", permission: "master.mitra.view" },
+      { icon: <Building2 size={16} />, label: "SPPG", path: "/admin/master/sppg", permission: "master.sppg.view" },
+      { icon: <Boxes size={16} />, label: "Produk & Barang", path: "/admin/master/produk", permission: "master.produk.view" },
+      { icon: <Warehouse size={16} />, label: "Gudang", path: "/admin/master/gudang", permission: "master.gudang.view" },
+      { icon: <Car size={16} />, label: "Armada", path: "/admin/master/armada", permission: "master.armada.view" },
+      { icon: <Users size={16} />, label: "Karyawan", path: "/admin/master/karyawan", permission: "master.karyawan.view" },
+      { icon: <Banknote size={16} />, label: "Bank & Rekening", path: "/admin/master/bank", permission: "master.bank_rekening.view" },
+      { icon: <Building size={16} />, label: "Perusahaan", path: "/admin/master/perusahaan", permission: "master.perusahaan.view" },
+      { icon: <ShieldCheck size={16} />, label: "Kategori & Satuan", path: "/admin/master/kategori", permission: "master.kategori.view" },
+      { icon: <ShieldCheck size={16} />, label: "Role", path: "/admin/master/role", permission: "master.role.view" },
     ],
   },
   {
@@ -62,10 +76,10 @@ const menus = [
     icon: <Warehouse />,
     key: "warehouse",
     children: [
-      { icon: <ArrowDownUp size={16} />, label: "Inbound", path: "/admin/warehouse/inbound" },
-      { icon: <ScanLine size={16} />, label: "Cek Stok (Kering)", path: "/admin/warehouse/stokKering" },
-      { icon: <ScanLine size={16} />, label: "Cek Stok (Basah)", path: "/admin/warehouse/stokBasah" },
-      { icon: <PackageSearch size={16} />, label: "Retur/Rusak", path: "/admin/warehouse/retur" },
+      { icon: <ArrowDownUp size={16} />, label: "Inbound", path: "/admin/warehouse/inbound", permission: "warehouse.inbound.view" },
+      { icon: <ScanLine size={16} />, label: "Cek Stok (Kering)", path: "/admin/warehouse/stokKering", permission: "warehouse.stok_kering.view" },
+      { icon: <ScanLine size={16} />, label: "Cek Stok (Basah)", path: "/admin/warehouse/stokBasah", permission: "warehouse.stok_basah.view" },
+      { icon: <PackageSearch size={16} />, label: "Retur/Rusak", path: "/admin/warehouse/retur", permission: "warehouse.retur.view" },
     ],
   },
   {
@@ -73,9 +87,9 @@ const menus = [
     icon: <ArrowLeftRight />,
     key: "pembelian",
     children: [
-      { icon: <ClipboardList size={16} />, label: "List Order & Penawaran", path: "/admin/transaksiPembelian/listorderpenawaran" },
-      { icon: <BaggageClaim size={16} />, label: "Daftar Pembelanjaan", path: "/admin/transaksiPembelian/daftarpembelanjaan" },
-      { icon: <Handbag size={16} />, label: "Daftar Pembelanjaan Supplier", path: "/admin/transaksiPembelian/daftarpembelanjaansupplier" },
+      { icon: <ClipboardList size={16} />, label: "List Order & Penawaran", path: "/admin/transaksiPembelian/listorderpenawaran", permission: "pembelian.order_penawaran.view" },
+      { icon: <BaggageClaim size={16} />, label: "Daftar Pembelanjaan", path: "/admin/transaksiPembelian/daftarpembelanjaan", permission: "pembelian.daftar_pembelanjaan.view" },
+      { icon: <Handbag size={16} />, label: "Daftar Pembelanjaan Supplier", path: "/admin/transaksiPembelian/daftarpembelanjaansupplier", permission: "pembelian.daftar_pembelanjaan_supplier.view" },
     ],
   },
   {
@@ -83,10 +97,10 @@ const menus = [
     icon: <ShoppingCart />,
     key: "transaksipenjualan",
     children: [
-      { icon: <CircleDollarSign size={16} />, label: "Penjualan", path: "/admin/transaksi-penjualan/penjualan" },
-      { icon: <Mails size={16} />, label: "Surat Jalan", path: "/admin/transaksi-penjualan/surat-jalan" },
-      { icon: <FileText size={16} />, label: "Tanda Terima", path: "/admin/transaksi-penjualan/tanda-terima" },
-      { icon: <ScrollText size={16} />, label: "Invoice Penjualan", path: "/admin/transaksi-penjualan/invoice-penjualan" },
+      { icon: <CircleDollarSign size={16} />, label: "Penjualan", path: "/admin/transaksi-penjualan/penjualan", permission: "penjualan.penjualan.view" },
+      { icon: <Mails size={16} />, label: "Surat Jalan", path: "/admin/transaksi-penjualan/surat-jalan", permission: "penjualan.surat_jalan.view" },
+      { icon: <FileText size={16} />, label: "Tanda Terima", path: "/admin/transaksi-penjualan/tanda-terima", permission: "penjualan.tanda_terima.view" },
+      { icon: <ScrollText size={16} />, label: "Invoice Penjualan", path: "/admin/transaksi-penjualan/invoice-penjualan", permission: "penjualan.invoice_penjualan.view" },
     ],
   },
    {
@@ -94,8 +108,8 @@ const menus = [
     icon: <Wallet />,
     key: "keuangan",
     children: [
-      { icon: <Boxes size={16} />, label: "Pemasukan", path: "/admin/keuangan/pemasukan" },
-      { icon: <TrendingUp size={16} />, label: "Pengeluaran", path: "/admin/keuangan/pengeluaran" },
+      { icon: <Boxes size={16} />, label: "Pemasukan", path: "/admin/keuangan/pemasukan", permission: "keuangan.pemasukan.view" },
+      { icon: <TrendingUp size={16} />, label: "Pengeluaran", path: "/admin/keuangan/pengeluaran", permission: "keuangan.pengeluaran.view" },
     ],
   },
   {
@@ -103,16 +117,38 @@ const menus = [
     icon: <BarChart3 />,
     key: "laporandananalisa",
     children: [
-      { icon: <Boxes size={16} />, label: "Laporan Stok Barang", path: "/admin/laporan/laporan-stok-barang" },
-      { icon: <FileText size={16} />, label: "Laba Rugi Transaksional", path: "/admin/laporan/laporan-laba-rugi" },
+      { icon: <Boxes size={16} />, label: "Laporan Stok Barang", path: "/admin/laporan/laporan-stok-barang", permission: "laporan.stok_barang.view" },
+      { icon: <FileText size={16} />, label: "Laba Rugi Transaksional", path: "/admin/laporan/laporan-laba-rugi", permission: "laporan.laba_rugi.view" },
     ],
   },
 ];
 
 export default function Sidebar({ open }: { open: boolean }) {
   const [openMenu, setOpenMenu] = useState<Record<string, boolean>>({});
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const [permissionCodes, setPermissionCodes] = useState<Set<string>>(new Set());
   const router = useRouter();
   const pathname = usePathname();
+
+  useEffect(() => {
+    const user = getStoredUser();
+    setIsSuperAdmin(isSuperAdminRole(user?.role));
+    setPermissionCodes(getStoredPermissionCodes(user));
+  }, []);
+
+  const visibleMenus = useMemo(
+    () =>
+      menus
+        .map((menu) => ({
+          ...menu,
+          children: menu.children.filter((sub) => {
+            if (!sub.permission) return true;
+            return isSuperAdmin || permissionCodes.has(sub.permission);
+          }),
+        }))
+        .filter((menu) => menu.children.length > 0),
+    [isSuperAdmin, permissionCodes]
+  );
 
   const toggleMenu = (key: string) => {
     setOpenMenu((prev) => ({
@@ -152,7 +188,7 @@ export default function Sidebar({ open }: { open: boolean }) {
 
         <p className="bg-white relative border-b-2 w-auto mt-6"></p>
 
-        {menus.map((menu) => (
+        {visibleMenus.map((menu) => (
           <div key={menu.key}>
             <div
               onClick={() => toggleMenu(menu.key)}

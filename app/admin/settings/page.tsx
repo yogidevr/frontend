@@ -176,11 +176,11 @@ const PERMISSION_MATRIX_SECTIONS: PermissionMatrixSection[] = [
     },
 ];
 
-const normalizeRoleToLogin = (role: string): LoginRole =>
-    role === "superadmin" || role === "super_admin" ? "superadmin" : "admin";
-
 const isSuperAdminRole = (role: string): boolean =>
     role.toLowerCase().replace(/[\s_-]+/g, "") === "superadmin";
+
+const normalizeRoleToLogin = (role: string): LoginRole =>
+    isSuperAdminRole(role) ? "superadmin" : "admin";
 
 const normalizeRoleForApi = (role: string): string =>
     isSuperAdminRole(role) ? "superadmin" : role.trim();
@@ -360,6 +360,8 @@ export default function Page() {
                 if (!user?.id) {
                     throw new Error("Data user tidak valid.");
                 }
+
+                window.localStorage.setItem("user", JSON.stringify(user));
 
                 const loginRole = normalizeRoleToLogin(String(user.role ?? "admin"));
                 setCurrentRole(loginRole);
@@ -595,7 +597,7 @@ export default function Page() {
     };
 
     const getPermissionCount = (user: ManagedUser): string => {
-        if (user.role === "superadmin") {
+        if (isSuperAdminRole(user.role)) {
             return "Semua akses";
         }
 

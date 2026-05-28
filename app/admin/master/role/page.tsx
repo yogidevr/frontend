@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowUpDown, Pencil, Plus, Trash2 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { getSortClass } from "@/lib/getSortClass";
+import { hasStoredPermission } from "@/lib/permissions";
 
 type RoleRow = {
   id: number;
@@ -37,6 +38,11 @@ export default function MasterRolePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const perPage = 10;
   const [storageReady, setStorageReady] = useState(false);
+  const [permissionReady, setPermissionReady] = useState(false);
+  const [canView, setCanView] = useState(false);
+  const [canCreate, setCanCreate] = useState(false);
+  const [canUpdate, setCanUpdate] = useState(false);
+  const [canDelete, setCanDelete] = useState(false);
 
   const resetForm = () => {
     setForm({ role: "" });
@@ -46,6 +52,8 @@ export default function MasterRolePage() {
   };
 
   const handleSubmit = () => {
+    if ((editId && !canUpdate) || (!editId && !canCreate)) return;
+
     const nextFieldErrors: FieldErrors = {};
     const trimmedRole = form.role.trim();
 
@@ -74,6 +82,8 @@ export default function MasterRolePage() {
   };
 
   const handleEdit = (row: RoleRow) => {
+    if (!canUpdate) return;
+
     setForm({ role: row.role });
     setFieldErrors({});
     setEditId(row.id);
@@ -81,6 +91,7 @@ export default function MasterRolePage() {
   };
 
   const handleDelete = () => {
+    if (!canDelete) return;
     if (!deleteId) return;
     setData((prev) => prev.filter((item) => item.id !== deleteId));
     setDeleteId(null);
@@ -113,6 +124,14 @@ export default function MasterRolePage() {
     () => sortedData.slice((effectivePage - 1) * perPage, effectivePage * perPage),
     [effectivePage, sortedData]
   );
+
+  useEffect(() => {
+    setCanView(hasStoredPermission("master.role.view"));
+    setCanCreate(hasStoredPermission("master.role.create"));
+    setCanUpdate(hasStoredPermission("master.role.update"));
+    setCanDelete(hasStoredPermission("master.role.delete"));
+    setPermissionReady(true);
+  }, []);
 
   useEffect(() => {
     const timeout = window.setTimeout(() => {
@@ -166,6 +185,29 @@ export default function MasterRolePage() {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }, [data, storageReady]);
 
+  if (!permissionReady) {
+    return (
+      <div className="p-6">
+        <div className="rounded-lg bg-white/80 p-6 shadow text-sm text-gray-600">
+          Memeriksa akses...
+        </div>
+      </div>
+    );
+  }
+
+  if (!canView) {
+    return (
+      <div className="p-6">
+        <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-red-700 shadow">
+          <h1 className="text-xl font-semibold">Akses ditolak</h1>
+          <p className="mt-2 text-sm">
+            Akun ini belum memiliki permission untuk melihat Master Role.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
@@ -180,13 +222,15 @@ export default function MasterRolePage() {
           className="border p-2 rounded-md w-1/4 bg-white shadow"
         />
 
-        <button
-          onClick={() => setOpenForm(true)}
-          className="flex items-center gap-2 bg-linear-to-t from-secondary via-primary to-secondary shadow-lg shadow-black/20 text-white px-4 py-2 rounded-lg hover:-translate-y-1 transition cursor-pointer"
-        >
-          <Plus size={16} />
-          Tambah Data
-        </button>
+        {canCreate ? (
+          <button
+            onClick={() => setOpenForm(true)}
+            className="flex items-center gap-2 bg-linear-to-t from-secondary via-primary to-secondary shadow-lg shadow-black/20 text-white px-4 py-2 rounded-lg hover:-translate-y-1 transition cursor-pointer"
+          >
+            <Plus size={16} />
+            Tambah Data
+          </button>
+        ) : null}
       </div>
 
       <div className="bg-white/70 backdrop-blur-lg rounded-lg shadow overflow-auto">
@@ -224,12 +268,17 @@ export default function MasterRolePage() {
                 </td>
                 <td className="p-3">{row.role}</td>
                 <td className="p-3 flex justify-center gap-2">
-                  <button onClick={() => handleEdit(row)} className="p-2 bg-blue-500/30 text-blue-700 rounded-md">
-                    <Pencil size={14} />
-                  </button>
-                  <button onClick={() => setDeleteId(row.id)} className="p-2 bg-red-500/30 text-red-700 rounded-md">
-                    <Trash2 size={14} />
-                  </button>
+                  {canUpdate ? (
+                    <button onClick={() => handleEdit(row)} className="p-2 bg-blue-500/30 text-blue-700 rounded-md">
+                      <Pencil size={14} />
+                    </button>
+                  ) : null}
+                  {canDelete ? (
+                    <button onClick={() => setDeleteId(row.id)} className="p-2 bg-red-500/30 text-red-700 rounded-md">
+                      <Trash2 size={14} />
+                    </button>
+                  ) : null}
+                  {!canUpdate && !canDelete ? <span className="text-gray-400">-</span> : null}
                 </td>
               </tr>
             ))}
